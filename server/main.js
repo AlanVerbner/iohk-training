@@ -9,11 +9,13 @@ import {
 import generateRandomData from '../imports/helpers/randomDataGenerator'
 
 function preloadInvoices( count ) {
-  generateRandomData( count ).forEach( invoice => {
-    Invoices.insert( invoice )
-  } )
+  Invoices.remove({}, () => {
+    generateRandomData( count ).forEach( invoice => {
+      Invoices.insert( invoice )
+    } )
+  })
 }
 
 Meteor.startup( () => {
-  preloadInvoices( 200 )
+  preloadInvoices( 100 )
 } );
