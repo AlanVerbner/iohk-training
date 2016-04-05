@@ -52,12 +52,17 @@ Template.body.helpers( {
     const invoices = Invoices.find( queryFilter )
     return invoices
   },
-  formatDate: dateFormater( 'YYYY-MM-DD' )
+  formatDate: dateFormater( 'YYYY-MM-DD' ),
+
+  getActiveClass(buttonId) {
+    const instance = Template.instance();
+    return instance.state.get( FILTER_FIELD ) === buttonId ? ' active' : ' ';
+  }
 } );
 
 Template.body.events( {
   'click .time-filter': ( event, template ) => {
-    $( event.target ).addClass( 'active' ).siblings().removeClass( 'active' )
+    //this.$( event.target ).addClass( 'active' ).siblings().removeClass( 'active' )
     template.state.set( FILTER_FIELD, event.target.id )
   }
 } );

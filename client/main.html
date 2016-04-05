@@ -15,10 +15,10 @@
         <div class="row margin-bottom-10 text-center">
           <div class="col-sm-12">
             <div class="btn-group" role="group" aria-label="...">
-              <button id="time-filter-today" type="button" class="btn btn-default time-filter">Today</button>
-              <button id="time-filter-week" type="button" class="btn btn-default time-filter">Week</button>
-              <button id="time-filter-month" type="button" class="btn btn-default time-filter">Month</button>
-              <button id="time-filter-all" type="button" class="btn btn-default active time-filter">All</button>
+              <button id="time-filter-today" type="button" class="btn btn-default time-filter {{ getActiveClass 'time-filter-today' }}">Today</button>
+              <button id="time-filter-week" type="button" class="btn btn-default time-filter {{ getActiveClass 'time-filter-week' }}">Week</button>
+              <button id="time-filter-month" type="button" class="btn btn-default time-filter {{ getActiveClass 'time-filter-month' }}">Month</button>
+              <button id="time-filter-all" type="button" class="btn btn-default time-filter {{ getActiveClass 'time-filter-all' }}">All</button>
             </div>
           </div>
         </div>
