@@ -1,25 +1,36 @@
+<!-- Latest compiled and minified CSS -->
 <head>
-  <title>simple</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 </head>
-
 <body>
-  <h1>Welcome to Meteor!</h1>
+  <div class="container">
+    <header class="row">
+      <div class="col-md-offset-2 col-md-8 col-sm-12">
+        <h1>Invoices</h1>
+      </div>
+    </header>
 
-  {{> hello}}
-  {{> info}}
+    <div class="row">
+      <div class="col-md-offset-2 col-md-8 col-sm-12">
+        <table class="table table-bordered table-stripped">
+          <thead>
+            <tr>
+              <td>Invoice Nr.</td>
+              <td>Total</td>
+              <td>Created At</td>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each invoice in invoices}}
+              <tr>
+                <td>{{ invoice.invoiceNumber }}</td>
+                <td>{{ invoice.total }}</td>
+                <td>{{ formatDate invoice.createdAt }}</td>
+              </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 </body>
-
-<template name="hello">
-  <button>Click Me</button>
-  <p>You've pressed the button {{counter}} times.</p>
-</template>
-
-<template name="info">
-  <h2>Learn Meteor!</h2>
-  <ul>
-    <li><a href="https://www.meteor.com/try">Do the Tutorial</a></li>
-    <li><a href="http://guide.meteor.com">Follow the Guide</a></li>
-    <li><a href="https://docs.meteor.com">Read the Docs</a></li>
-    <li><a href="https://forums.meteor.com">Discussions</a></li>
-  </ul>
-</template>

@@ -1,22 +1,20 @@
-import { Template } from 'meteor/templating';
-import { ReactiveVar } from 'meteor/reactive-var';
+import {
+  Template
+} from 'meteor/templating';
+
+import {
+  Invoices
+} from '../imports/api/invoices'
+
+import {
+  dateFormater
+} from '../imports/ui/helpers'
 
 import './main.html';
 
-Template.hello.onCreated(function helloOnCreated() {
-  // counter starts at 0
-  this.counter = new ReactiveVar(0);
-});
-
-Template.hello.helpers({
-  counter() {
-    return Template.instance().counter.get();
+Template.body.helpers( {
+  invoices() {
+    return Invoices.find( {} )
   },
-});
-
-Template.hello.events({
-  'click button'(event, instance) {
-    // increment the counter when button is clicked
-    instance.counter.set(instance.counter.get() + 1);
-  },
-});
+  formatDate: dateFormater('YYYY-MM-DD')
+} );
