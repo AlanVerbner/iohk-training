@@ -19,6 +19,8 @@ import {
 import './main.html'
 
 const FILTER_FIELD = 'filter';
+const TOTAL_FIELD_SORT = 'totalSort'
+const CREATEDAD_FIELD_SORT = 'createdAtSort'
 
 function getCreatedAtDateFilter( filter ) {
   switch ( filter ) {
@@ -46,19 +48,37 @@ function createQueryFilter( state ) {
   return queryFilter
 }
 
+function createSort( state ) {
+  return {
+    total: state.get( TOTAL_FIELD_SORT ),
+    createdAt: state.get( CREATEDAD_FIELD_SORT )
+
+  }
+}
+
 Template.body.onCreated( function onBodyCreated() {
   this.state = new ReactiveDict( 'mainTableState' )
   this.state.set( FILTER_FIELD, 'time-filter-all' )
+  this.state.set( CREATEDAD_FIELD_SORT, 1 )
+  this.state.set( TOTAL_FIELD_SORT, -1 )
+
+  this.getFilter = () => {
+    return createQueryFilter( this.state )
+  }
 
   this.autorun( () => {
-    const queryFilter = createQueryFilter( this.state )
+    const queryFilter = this.getFilter()
     this.subscribe( 'invoices', queryFilter )
   } );
 } )
 
 Template.body.helpers( {
   invoices() {
-    const invoices = Invoices.find( {} )
+    const instance = Template.instance();
+    const sort = createSort( instance.state );
+    const invoices = Invoices.find( {}, {
+      sort: sort
+    } )
     return invoices
   },
   formatDate: dateFormater( 'YYYY-MM-DD' ),
@@ -66,12 +86,23 @@ Template.body.helpers( {
   getActiveClass( buttonId ) {
     const instance = Template.instance();
     return instance.state.get( FILTER_FIELD ) === buttonId ? ' active' : ' ';
+  },
+
+  getSortIcon( sortId ) {
+    const instance = Template.instance();
+    return instance.state.get( sortId ) === 1 ? ' glyphicon-triangle-top' : ' glyphicon-triangle-bottom';
   }
 } );
 
 Template.body.events( {
   'click .time-filter': ( event, template ) => {
-    //this.$( event.target ).addClass( 'active' ).siblings().removeClass( 'active' )
     template.state.set( FILTER_FIELD, event.target.id )
+  },
+  // Fixme: this could be done as a generic template
+  'click .sort-icon': ( event, template ) => {
+    const sortId = event.target.getAttribute( 'data-sort-id' )
+    const currentSort = template.state.get( sortId )
+    template.state.set( sortId, currentSort === 1 ? -1 : 1 )
   }
+
 } );

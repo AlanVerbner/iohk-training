@@ -29,8 +29,14 @@
               <thead>
                 <tr>
                   <td>Invoice Nr.</td>
-                  <td>Total</td>
-                  <td>Created At</td>
+                  <td>
+                    <span>Total</span>
+                    <span data-sort-id="totalSort" class="sort-icon glyphicon {{ getSortIcon 'totalSort'}}"></span>
+                  </td>
+                  <td>
+                    <span>Created At</span>
+                    <span data-sort-id="createdAtSort" class="sort-icon glyphicon {{ getSortIcon 'createdAtSort'}}"></span>
+                  </td>
                 </tr>
               </thead>
               <tbody>

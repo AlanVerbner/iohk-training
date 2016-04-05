@@ -3,7 +3,7 @@ import faker from 'faker'
 function generateRandomItem( index ) {
   return {
     invoiceNumber: index,
-    total: faker.finance.amount(),
+    total: parseFloat(faker.finance.amount()),
     createdAt: faker.date.past( 0, new Date() )
   }
 }
