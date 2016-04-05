@@ -33,28 +33,37 @@ function getCreatedAtDateFilter( filter ) {
   }
 }
 
+function createQueryFilter( state ) {
+  const dateFilter = getCreatedAtDateFilter( state.get( FILTER_FIELD ) );
+  const queryFilter = {};
+
+  if ( dateFilter !== null ) {
+    queryFilter.createdAt = {
+      $gte: dateFilter.toDate()
+    }
+  }
+
+  return queryFilter
+}
+
 Template.body.onCreated( function onBodyCreated() {
   this.state = new ReactiveDict( 'mainTableState' )
-  this.state.set( FILTER_FIELD, 'time-filter-all' );
+  this.state.set( FILTER_FIELD, 'time-filter-all' )
+
+  this.autorun( () => {
+    const queryFilter = createQueryFilter( this.state )
+    this.subscribe( 'invoices', queryFilter )
+  } );
 } )
 
 Template.body.helpers( {
   invoices() {
-    const instance = Template.instance();
-    const dateFilter = getCreatedAtDateFilter( instance.state.get( FILTER_FIELD ) );
-    const queryFilter = {};
-
-    if ( dateFilter !== null ) {
-      queryFilter.createdAt = {
-        $gte: dateFilter.toDate()
-      }
-    }
-    const invoices = Invoices.find( queryFilter )
+    const invoices = Invoices.find( {} )
     return invoices
   },
   formatDate: dateFormater( 'YYYY-MM-DD' ),
 
-  getActiveClass(buttonId) {
+  getActiveClass( buttonId ) {
     const instance = Template.instance();
     return instance.state.get( FILTER_FIELD ) === buttonId ? ' active' : ' ';
   }
