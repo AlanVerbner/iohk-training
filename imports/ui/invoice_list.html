@@ -1,0 +1,55 @@
+<template name="InvoiceList">
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-offset-2 col-md-8 col-sm-12">
+          <header class="row margin-bottom-10">
+            <div class="col-sm-12">
+              <h1>Invoices</h1>
+            </div>
+          </header>
+
+          <div class="row margin-bottom-10 text-center">
+            <div class="col-sm-12">
+              <div class="btn-group" role="group" aria-label="...">
+                <button id="today" type="button" class="btn btn-default time-filter {{ getActiveClass 'today' }}">Today</button>
+                <button id="week" type="button" class="btn btn-default time-filter {{ getActiveClass 'week' }}">Week</button>
+                <button id="month" type="button" class="btn btn-default time-filter {{ getActiveClass 'month' }}">Month</button>
+                <button id="all" type="button" class="btn btn-default time-filter {{ getActiveClass 'all' }}">All</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-12">
+              <table class="table table-bordered table-stripped">
+                <thead>
+                  <tr>
+                    <td>Invoice Nr.</td>
+                    <td>
+                      <span>Total</span>
+                      <span data-sort-id="sortTotal" class="sort-icon glyphicon {{ getSortIcon 'sortTotal'}}"></span>
+                    </td>
+                    <td>
+                      <span>Created At</span>
+                      <span data-sort-id="sortCreatedAt" class="sort-icon glyphicon {{ getSortIcon 'sortCreatedAt'}}"></span>
+                    </td>
+                  </tr>
+                </thead>
+                <tbody>
+                  {{#each invoice in invoices}}
+                    <tr>
+                      <td>{{ invoice.invoiceNumber }}</td>
+                      <td>{{ invoice.total }}</td>
+                      <td>{{ formatDate invoice.createdAt }}</td>
+                    </tr>
+                  {{/each}}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</template>
