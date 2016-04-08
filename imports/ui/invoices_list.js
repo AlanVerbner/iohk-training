@@ -13,6 +13,8 @@ import {
 } from '../ui/helpers'
 
 import './invoice_list.html'
+import './invoices_filters.js'
+import './table.js'
 
 function getCreatedAtDateFilter( filter ) {
   switch ( filter ) {
@@ -54,6 +56,10 @@ function getQueryFromState( state ) {
   return query
 }
 
+function getSortIdFromField( fieldId ) {
+  return 'sort' + fieldId.charAt( 0 ).toUpperCase() + fieldId.substr( 1 )
+}
+
 Template.InvoiceList.onCreated( function onBodyCreated() {
 
   this.getFilter = () => {
@@ -61,57 +67,81 @@ Template.InvoiceList.onCreated( function onBodyCreated() {
     return createQueryFilter( controller.state )
   }
 
+  this.getSorting = () => {
+    var controller = Iron.controller();
+    return createSort( controller.state );
+  }
+
   this.autorun( () => {
     const queryFilter = this.getFilter()
-    this.subscribe( 'invoices', queryFilter )
+    const sorting = this.getSorting();
+    this.subscribe( 'invoices', queryFilter, sorting )
   } );
 } )
 
 Template.InvoiceList.helpers( {
+  invoiceTableFields() {
+
+    var controller = Iron.controller();
+
+    return [ {
+      id: 'invoiceNumber',
+      displayText: 'Invoice Number',
+      name: 'invoiceNumber'
+    }, {
+      id: 'total',
+      displayText: 'Total',
+      name: 'total',
+      sort: controller.state.get( getSortIdFromField( 'total' ) )
+    }, {
+      id: 'createdAt',
+      displayText: 'Created At',
+      name: entity => {
+        return dateFormater( 'YYYY-MM-DD' )( entity.createdAt )
+      },
+      sort: controller.state.get( getSortIdFromField( 'createdAt' ) )
+    } ]
+  },
+
   invoices() {
     var controller = Iron.controller();
-    const sort = createSort( controller.state );
     const invoices = Invoices.find( {}, {
-      sort: sort
+      sort: createSort( controller.state )
     } )
     return invoices
   },
-  formatDate: dateFormater( 'YYYY-MM-DD' ),
 
-  getActiveClass( buttonId ) {
+  currentTimeFilter() {
     var controller = Iron.controller();
-    return controller.state.get( 'timeFilter' ) === buttonId ? ' active' : ' ';
+    return controller.state.get( 'timeFilter' )
   },
 
-  getSortIcon( sortId ) {
-    var controller = Iron.controller();
-    return controller.state.get( sortId ) === 'asc' ? ' glyphicon-triangle-top' : ' glyphicon-triangle-bottom';
-  }
-} );
-
-Template.InvoiceList.events( {
-  'click .time-filter': ( event, template ) => {
-    var controller = Iron.controller();
-    Router.go( 'InvoiceList', {
-      timeFilter: event.target.id
-    }, {
-      query: getQueryFromState( controller.state.all() )
-    } )
+  onFilterSelected() {
+    return function( filterId ) {
+      var controller = Iron.controller();
+      Router.go( 'InvoiceList', {
+        timeFilter: filterId
+      }, {
+        query: getQueryFromState( controller.state.all() )
+      } )
+    }
   },
-  // Fixme: this could be done as a generic template
-  'click .sort-icon': ( event, template ) => {
-    var controller = Iron.controller();
-    const sortId = event.target.getAttribute( 'data-sort-id' )
-    const currentSort = controller.state.get( sortId )
-    const query = getQueryFromState( controller.state.all() )
-    query[sortId] = currentSort === 'asc' ? 'desc' : 'asc'
 
-    Router.go( 'InvoiceList', {
-      timeFilter: controller.state.get('timeFilter')
-    }, {
-      query: query
-    } )
+  onSortingChanged() {
+    return function( fieldId ) {
+      var controller = Iron.controller();
+      const sortId = getSortIdFromField( fieldId )
+      const currentSort = controller.state.get( sortId )
+      const query = getQueryFromState( controller.state.all() )
+      query[ sortId ] = currentSort === 'asc' ? 'desc' : 'asc'
 
+      Router.go( 'InvoiceList', {
+        timeFilter: controller.state.get( 'timeFilter' )
+      }, {
+        query: query
+      } )
+
+    }
   }
 
 } );

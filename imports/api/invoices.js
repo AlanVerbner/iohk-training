@@ -5,7 +5,10 @@ import {
 export const Invoices = new Mongo.Collection( 'Invoices' )
 
 if ( Meteor.isServer ) {
-  Meteor.publish( 'invoices', function invoicesPublication( query ) {
-    return Invoices.find( query )
+  Meteor.publish( 'invoices', function invoicesPublication( query, sort, limit = 1000 ) {
+    return Invoices.find( query, {
+      sort: sort,
+      limit: limit
+    } )
   } )
 }

@@ -1,0 +1,26 @@
+<template name="Table">
+
+  <table class="table table-bordered table-stripped">
+    <thead>
+      <tr>
+        {{#each field in fields}}
+          <td>
+            <span>{{field.displayText}}</span>
+            {{#if field.sort }}
+              <span data-sort-id="{{field.id}}" class="sort-icon glyphicon {{ getSortIcon field.sort}}"></span>
+            {{/if}}
+          </td>
+        {{/each}}
+      </tr>
+    </thead>
+    <tbody>
+      {{#each entity in entities}}
+        <tr>
+          {{#each field in fields}}
+            <td>{{ getFieldValue entity field }}</td>
+          {{/each}}
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</template>
