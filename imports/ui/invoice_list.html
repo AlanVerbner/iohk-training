@@ -17,7 +17,11 @@
 
           <div class="row">
             <div class="col-sm-12">
-              {{> Table fields=invoiceTableFields entities=invoices onSortingChanged=onSortingChanged }}
+              {{ #if invoicesCount }}
+                {{ #InfiniteScroll total=invoicesCount loaded=invoicesLoaded onNeedMoreItems=onNeedMoreItems }}
+                  {{> Table fields=invoiceTableFields entities=invoices onSortingChanged=onSortingChanged }}
+                  {{ /InfiniteScroll }}
+              {{ /if }}
             </div>
           </div>
         </div>

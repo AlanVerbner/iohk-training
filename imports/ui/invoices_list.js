@@ -14,7 +14,10 @@ import {
 
 import './invoice_list.html'
 import './invoices_filters.js'
+import './infinite_scroll.js'
 import './table.js'
+
+const LOAD_SIZE = 20
 
 function getCreatedAtDateFilter( filter ) {
   switch ( filter ) {
@@ -72,10 +75,16 @@ Template.InvoiceList.onCreated( function onBodyCreated() {
     return createSort( controller.state );
   }
 
+  this.getLimit = () => {
+    var controller = Iron.controller();
+    return controller.state.get('limit') || LOAD_SIZE
+  }
+
   this.autorun( () => {
     const queryFilter = this.getFilter()
     const sorting = this.getSorting();
-    this.subscribe( 'invoices', queryFilter, sorting )
+    const limit = this.getLimit();
+    this.subscribe( 'invoices', queryFilter, sorting, limit )
   } );
 } )
 
@@ -111,6 +120,14 @@ Template.InvoiceList.helpers( {
     return invoices
   },
 
+  invoicesCount() {
+    return Counts.get('total-invoices')
+  },
+
+  invoicesLoaded() {
+    return Invoices.find( {} ).count()
+  },
+
   currentTimeFilter() {
     var controller = Iron.controller();
     return controller.state.get( 'timeFilter' )
@@ -140,7 +157,14 @@ Template.InvoiceList.helpers( {
       }, {
         query: query
       } )
+    }
+  },
 
+  onNeedMoreItems() {
+    const controller = Iron.controller();
+    return function() {
+      const currentSize = controller.state.get( 'limit' ) || LOAD_SIZE
+      controller.state.set( 'limit', currentSize + LOAD_SIZE )
     }
   }
 

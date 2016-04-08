@@ -17,5 +17,5 @@ function preloadInvoices( count ) {
 }
 
 Meteor.startup( () => {
-  preloadInvoices( 500 )
+  preloadInvoices( 1000 )
 } );

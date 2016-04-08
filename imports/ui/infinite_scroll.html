@@ -1,0 +1,11 @@
+<template name="InfiniteScroll">
+  {{> UI.contentBlock}}
+  <div>
+    {{#if allLoaded }}
+      <span>No more items to load!</span>
+    {{/if}}
+    {{#if moreToLoad }}
+      <span id="load-more">Load More!</span>
+    {{/if}}
+  </div>
+</template>
