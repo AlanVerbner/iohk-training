@@ -20,3 +20,7 @@ Router.route( '/invoices/:timeFilter', function() {
 }, {
   name: 'InvoiceList'
 } );
+
+Router.route( '/', function() {
+  this.redirect( '/invoices/all' )
+} )
